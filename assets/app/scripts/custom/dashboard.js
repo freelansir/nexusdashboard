@@ -1,16 +1,2456 @@
-//
-// Dashboard
-//
-
-
+// Sales Dashboard
 
 // Class definition
 var KDashboard = function() {
 
-    var mediumCharts = function() {
-        KLib.initMediumChart('k_widget_mini_chart_1', [20, 45, 20, 10, 20, 35, 20, 25, 10, 10], 70, KApp.getStateColor('brand'));
-        KLib.initMediumChart('k_widget_mini_chart_2', [10, 15, 25, 45, 15, 30, 10, 40, 15, 25], 70, KApp.getStateColor('danger'));
-        KLib.initMediumChart('k_widget_mini_chart_3', [22, 15, 40, 10, 35, 20, 30, 50, 15, 10], 70, KApp.getBaseColor('shape', 4));
+    var SalesStatisticsChart = function() {
+        if (!document.getElementById('sales-dashboard-monthly_sales')) {
+            return;
+        }
+
+        var MONTHS = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
+
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+            datasets: [{
+                label: 'Actual',
+                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
+                borderWidth: 0,
+                data: [17970, 30700, 33627, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }, {
+                label: 'Forecast',
+                backgroundColor: color(KApp.getBaseColor('shape', 1)).alpha(1).rgbString(),
+                borderWidth: 0,
+                data: [9500, 21500, 34000, 37000, 43000, 46500, 50000, 56500, 59500, 66000, 69000, 72000]
+            }]
+        };
+
+        var ctx = document.getElementById('sales-dashboard-monthly_sales').getContext('2d');
+        var myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: false,
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        gridLines: false,
+                        ticks: {
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }],
+                    yAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: KApp.getBaseColor('shape', 2),
+                            drawBorder: false,
+                            offsetGridLines: false,
+                            drawTicks: false,
+                            borderDash: [3, 4],
+                            zeroLineWidth: 1,
+                            zeroLineColor: KApp.getBaseColor('shape', 2),
+                            zeroLineBorderDash: [3, 4]
+                        },
+                        ticks: {
+                            max: 80000,                            
+                            stepSize: 10000,
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }]
+                },
+                title: {
+                    display: false
+                },
+                hover: {
+                    mode: 'index'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    }
+
+    var SalesDashboard_Profit = function() {
+        if (!document.getElementById('sales-dashboard-profit')) {
+            return;
+        }
+
+        var max = 30000;
+        var color = KApp.getStateColor('brand');
+        var ctx = document.getElementById('sales-dashboard-profit').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [9970, 10856, 13219];
+
+        var mainConfig = {
+            type: 'line',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Profit',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var SalesDashboard_Revenue = function() {
+        if (!document.getElementById('sales-dashboard-revenue')) {
+            return;
+        }
+
+        var max = 80000;
+        var color = KApp.getStateColor('success');
+        var ctx = document.getElementById('sales-dashboard-revenue').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [17970, 30707, 30455, 37476];
+
+        var mainConfig = {
+            type: 'line',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', 'Last 30 Days'],
+                datasets: [{
+                    label: 'Revenue',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var SalesDashboard_Cash = function() {
+        if (!document.getElementById('sales-dashboard-cash')) {
+            return;
+        }
+
+        var max = 250000;
+        var color = KApp.getStateColor('danger');
+        var ctx = document.getElementById('sales-dashboard-cash').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [82300, 54900, 61500];
+
+        var mainConfig = {
+            type: 'line',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Cash',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var SalesDashboard_ClientHours = function() {
+        if (!document.getElementById('sales-dashboard-client_hours')) {
+            return;
+        }
+
+        // Main chart
+        var max = 800;
+        var color = KApp.getStateColor('focus');
+        var ctx = document.getElementById('sales-dashboard-client_hours').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [154, 252, 240, 301];
+
+        var mainConfig = {
+            type: 'line',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', 'Last 30 Days'],
+                datasets: [{
+                    label: 'Client Hours',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var SalesDashboard_Utilization = function() {
+        if (!document.getElementById('sales-dashboard-utilization')) {
+            return;
+        }
+
+        // Main chart
+        var max = 100;
+        var color = KApp.getStateColor('warning');
+        var ctx = document.getElementById('sales-dashboard-utilization').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [4, 6.6, 6.3, 7.9];
+
+        var mainConfig = {
+            type: 'line',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', 'Last 30 Days'],
+                datasets: [{
+                    label: 'Client Hours',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var SalesDashboard_FixedCosts = function() {
+        if (!document.getElementById('sales-dashboard-fixed_cost')) {
+            return;
+        }
+
+        // Main chart
+        var max = 100;
+        var color = KApp.getStateColor('info');
+        var ctx = document.getElementById('sales-dashboard-fixed_cost').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [6.5, 11, 18.6, 20];
+
+        var mainConfig = {
+            type: 'line',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', 'Last 30 Days'],
+                datasets: [{
+                    label: 'Client Hours',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var RevenueByPractitionerChart_October = function() {
+        if (!document.getElementById('sales-dashboard-sales_by_person-oct')) {
+            return;
+        }
+
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: ['Karen (46%)', 'Cass (36%)', 'Felix (16%)', 'Mai (2%)'],
+            datasets: [{
+                label: 'Sales',
+                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
+                borderWidth: 0,
+                data: [8317, 6413, 2880, 360],
+                borderColor: KApp.getStateColor('focus'),
+                borderWidth: 3,
+                backgroundColor: color(KApp.getStateColor('focus')).alpha(0.5).rgbString(),
+                //pointBackgroundColor: KApp.getStateColor('brand'),
+                fill: true
+            }]
+        };
+
+        var ctx = document.getElementById('sales-dashboard-sales_by_person-oct').getContext('2d');
+        var myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: false,
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        gridLines: false,
+                        ticks: {
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }],
+                    yAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: KApp.getBaseColor('shape', 2),
+                            drawBorder: false,
+                            offsetGridLines: false,
+                            drawTicks: false,
+                            borderDash: [3, 4],
+                            zeroLineWidth: 1,
+                            zeroLineColor: KApp.getBaseColor('shape', 2),
+                            zeroLineBorderDash: [3, 4]
+                        },
+                        ticks: {
+                            max: 10000,                            
+                            stepSize: 1000,
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }]
+                },
+                title: {
+                    display: false
+                },
+                hover: {
+                    mode: 'index'
+                },
+                elements: {
+                    line: {
+                        tension: 0.5
+                    },
+                    point: { 
+                        radius: 0 
+                    }
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    }
+
+    var RevenueByPractitionerChart_November = function() {
+        if (!document.getElementById('sales-dashboard-sales_by_person-nov')) {
+            return;
+        }
+
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: ['Karen (42%)', 'Cass (40%)', 'Felix (12%)', 'Mai (6%)'],
+            datasets: [{
+                label: 'Sales',
+                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
+                borderWidth: 0,
+                data: [12783, 12402, 3833, 1690],
+                borderColor: KApp.getStateColor('focus'),
+                borderWidth: 3,
+                backgroundColor: color(KApp.getStateColor('focus')).alpha(0.5).rgbString(),
+                //pointBackgroundColor: KApp.getStateColor('brand'),
+                fill: true
+            }]
+        };
+
+        var ctx = document.getElementById('sales-dashboard-sales_by_person-nov').getContext('2d');
+        var myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: false,
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        gridLines: false,
+                        ticks: {
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }],
+                    yAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: KApp.getBaseColor('shape', 2),
+                            drawBorder: false,
+                            offsetGridLines: false,
+                            drawTicks: false,
+                            borderDash: [3, 4],
+                            zeroLineWidth: 1,
+                            zeroLineColor: KApp.getBaseColor('shape', 2),
+                            zeroLineBorderDash: [3, 4]
+                        },
+                        ticks: {
+                            max: 15000,                            
+                            stepSize: 1000,
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }]
+                },
+                title: {
+                    display: false
+                },
+                hover: {
+                    mode: 'index'
+                },
+                elements: {
+                    line: {
+                        tension: 0.5
+                    },
+                    point: { 
+                        radius: 0 
+                    }
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    }
+
+    var RevenueByPractitionerChart_December = function() {
+        if (!document.getElementById('sales-dashboard-sales_by_person-dec')) {
+            return;
+        }
+
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: ['Karen (36%)', 'Cass (35%)', 'Felix (16%)', 'Mai (3%)', 'Daniel (2%)', 'Phil (5%)', 'Eric (3%)'],
+            datasets: [{
+                label: 'Sales',
+                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
+                borderWidth: 0,
+                data: [12014, 11637, 5328, 1140, 780, 1797, 932],
+                borderColor: KApp.getStateColor('focus'),
+                borderWidth: 3,
+                backgroundColor: color(KApp.getStateColor('focus')).alpha(0.5).rgbString(),
+                //pointBackgroundColor: KApp.getStateColor('brand'),
+                fill: true
+            }]
+        };
+
+        var ctx = document.getElementById('sales-dashboard-sales_by_person-dec').getContext('2d');
+        var myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: false,
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        gridLines: false,
+                        ticks: {
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }],
+                    yAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: KApp.getBaseColor('shape', 2),
+                            drawBorder: false,
+                            offsetGridLines: false,
+                            drawTicks: false,
+                            borderDash: [3, 4],
+                            zeroLineWidth: 1,
+                            zeroLineColor: KApp.getBaseColor('shape', 2),
+                            zeroLineBorderDash: [3, 4]
+                        },
+                        ticks: {
+                            max: 15000,                            
+                            stepSize: 1000,
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }]
+                },
+                title: {
+                    display: false
+                },
+                hover: {
+                    mode: 'index'
+                },
+                elements: {
+                    line: {
+                        tension: 0.5
+                    },
+                    point: { 
+                        radius: 0 
+                    }
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    }
+
+    var RevenueByPractitionerChart_30Days = function() {
+        if (!document.getElementById('sales-dashboard-sales_by_person-30_days')) {
+            return;
+        }
+
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: ['Karen (36%)', 'Cass (37%)', 'Felix (16%)', 'Mai (5%)', 'Daniel (2%)', 'Phil (4%)', 'Eric (1%)'],
+            datasets: [{
+                label: 'Sales',
+                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
+                borderWidth: 0,
+                data: [13498, 13953, 5870, 1710, 570, 1689, 492],
+                borderColor: KApp.getStateColor('focus'),
+                borderWidth: 3,
+                backgroundColor: color(KApp.getStateColor('focus')).alpha(0.5).rgbString(),
+                //pointBackgroundColor: KApp.getStateColor('brand'),
+                fill: true
+            }]
+        };
+
+        var ctx = document.getElementById('sales-dashboard-sales_by_person-30_days').getContext('2d');
+        var myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: false,
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        gridLines: false,
+                        ticks: {
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }],
+                    yAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: KApp.getBaseColor('shape', 2),
+                            drawBorder: false,
+                            offsetGridLines: false,
+                            drawTicks: false,
+                            borderDash: [3, 4],
+                            zeroLineWidth: 1,
+                            zeroLineColor: KApp.getBaseColor('shape', 2),
+                            zeroLineBorderDash: [3, 4]
+                        },
+                        ticks: {
+                            max: 15000,                            
+                            stepSize: 1000,
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }]
+                },
+                title: {
+                    display: false
+                },
+                hover: {
+                    mode: 'index'
+                },
+                elements: {
+                    line: {
+                        tension: 0.5
+                    },
+                    point: { 
+                        radius: 0 
+                    }
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    }
+
+    var RevenueByPractitionerChart_LastWeek = function() {
+        if (!document.getElementById('sales-dashboard-sales_by_person-last_week')) {
+            return;
+        }
+
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: ['Karen (24%)', 'Cass (38%)', 'Felix (19%)', 'Mai (4%)', 'Daniel (5%)', 'Phil (8%)', 'Eric (3%)'],
+            datasets: [{
+                label: 'Sales',
+                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
+                borderWidth: 0,
+                data: [1921, 2970, 1500, 320, 360, 605, 203],
+                borderColor: KApp.getStateColor('focus'),
+                borderWidth: 3,
+                backgroundColor: color(KApp.getStateColor('focus')).alpha(0.5).rgbString(),
+                //pointBackgroundColor: KApp.getStateColor('brand'),
+                fill: true
+            }]
+        };
+
+        var ctx = document.getElementById('sales-dashboard-sales_by_person-last_week').getContext('2d');
+        var myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: false,
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        gridLines: false,
+                        ticks: {
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }],
+                    yAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: KApp.getBaseColor('shape', 2),
+                            drawBorder: false,
+                            offsetGridLines: false,
+                            drawTicks: false,
+                            borderDash: [3, 4],
+                            zeroLineWidth: 1,
+                            zeroLineColor: KApp.getBaseColor('shape', 2),
+                            zeroLineBorderDash: [3, 4]
+                        },
+                        ticks: {
+                            max: 5000,                            
+                            stepSize: 500,
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }]
+                },
+                title: {
+                    display: false
+                },
+                hover: {
+                    mode: 'index'
+                },
+                elements: {
+                    line: {
+                        tension: 0.5
+                    },
+                    point: { 
+                        radius: 0 
+                    }
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    }
+
+    var RevenueByPractitionerChart_Last7 = function() {
+        if (!document.getElementById('sales-dashboard-sales_by_person-last_7')) {
+            return;
+        }
+
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: ['Karen (31%)', 'Cass (35%)', 'Felix (14%)', 'Mai (4%)', 'Daniel (2%)', 'Phil (11%)', 'Eric (3%)'],
+            datasets: [{
+                label: 'Sales',
+                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
+                borderWidth: 0,
+                data: [3430, 3862, 1603, 490, 210, 1237, 288],
+                borderColor: KApp.getStateColor('focus'),
+                borderWidth: 3,
+                backgroundColor: color(KApp.getStateColor('focus')).alpha(0.5).rgbString(),
+                //pointBackgroundColor: KApp.getStateColor('brand'),
+                fill: true
+            }]
+        };
+
+        var ctx = document.getElementById('sales-dashboard-sales_by_person-last_7').getContext('2d');
+        var myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: false,
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        gridLines: false,
+                        ticks: {
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }],
+                    yAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: KApp.getBaseColor('shape', 2),
+                            drawBorder: false,
+                            offsetGridLines: false,
+                            drawTicks: false,
+                            borderDash: [3, 4],
+                            zeroLineWidth: 1,
+                            zeroLineColor: KApp.getBaseColor('shape', 2),
+                            zeroLineBorderDash: [3, 4]
+                        },
+                        ticks: {
+                            max: 5000,                            
+                            stepSize: 500,
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }]
+                },
+                title: {
+                    display: false
+                },
+                hover: {
+                    mode: 'index'
+                },
+                elements: {
+                    line: {
+                        tension: 0.5
+                    },
+                    point: { 
+                        radius: 0 
+                    }
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    }
+
+    var RevenueByPractitionerChart_YTD = function() {
+        if (!document.getElementById('sales-dashboard-sales_by_person-ytd')) {
+            return;
+        }
+
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: ['Karen (36%)', 'Cass (35%)', 'Felix (16%)', 'Mai (3%)', 'Daniel (2%)', 'Phil (5%)', 'Eric (3%)'],
+            datasets: [{
+                label: 'Sales',
+                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
+                borderWidth: 0,
+                data: [12014, 11637, 5328, 1140, 780, 1797, 932],
+                borderColor: KApp.getStateColor('focus'),
+                borderWidth: 3,
+                backgroundColor: color(KApp.getStateColor('focus')).alpha(0.5).rgbString(),
+                //pointBackgroundColor: KApp.getStateColor('brand'),
+                fill: true
+            }]
+        };
+
+        var ctx = document.getElementById('sales-dashboard-sales_by_person-lytd').getContext('2d');
+        var myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: false,
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        gridLines: false,
+                        ticks: {
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }],
+                    yAxes: [{
+                        categoryPercentage: 0.35,
+                        barPercentage: 0.70,
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: KApp.getBaseColor('shape', 2),
+                            drawBorder: false,
+                            offsetGridLines: false,
+                            drawTicks: false,
+                            borderDash: [3, 4],
+                            zeroLineWidth: 1,
+                            zeroLineColor: KApp.getBaseColor('shape', 2),
+                            zeroLineBorderDash: [3, 4]
+                        },
+                        ticks: {
+                            max: 15000,                            
+                            stepSize: 1000,
+                            display: true,
+                            beginAtZero: true,
+                            fontColor: KApp.getBaseColor('shape', 3),
+                            fontSize: 13,
+                            padding: 10
+                        }
+                    }]
+                },
+                title: {
+                    display: false
+                },
+                hover: {
+                    mode: 'index'
+                },
+                elements: {
+                    line: {
+                        tension: 0.5
+                    },
+                    point: { 
+                        radius: 0 
+                    }
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 5,
+                        bottom: 5
+                    }
+                }
+            }
+        });
+    }
+
+
+    // ASSOCIATE CHARTS
+
+    var AssociateSales_Karen = function() {
+        if (!document.getElementById('associate-sales-karen')) {
+            return;
+        }
+
+        var max = 20000;
+        var color = KApp.getStateColor('brand');
+        var ctx = document.getElementById('associate-sales-karen').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [8317, 12783, 12014, 13498];
+
+        var mainConfig = {
+            type: 'bar',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', "Last 30 Days"],
+                datasets: [{
+                    label: 'Sales',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var AssociateSales_Cass = function() {
+        if (!document.getElementById('associate-sales-cass')) {
+            return;
+        }
+
+        var max = 20000;
+        var color = KApp.getStateColor('success');
+        var ctx = document.getElementById('associate-sales-cass').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [6413, 12402, 11637, 13953];
+
+        var mainConfig = {
+            type: 'bar',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', "Last 30 Days"],
+                datasets: [{
+                    label: 'Sales',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var AssociateSales_Felix = function() {
+        if (!document.getElementById('associate-sales-felix')) {
+            return;
+        }
+
+        var max = 20000;
+        var color = KApp.getStateColor('danger');
+        var ctx = document.getElementById('associate-sales-felix').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [2880, 3833, 5328, 5870];
+
+        var mainConfig = {
+            type: 'bar',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', "Last 30 Days"],
+                datasets: [{
+                    label: 'Sales',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var AssociateSales_Mai = function() {
+        if (!document.getElementById('associate-sales-mai')) {
+            return;
+        }
+
+        var max = 20000;
+        var color = KApp.getStateColor('focus');
+        var ctx = document.getElementById('associate-sales-mai').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [360, 1690, 1140, 1710];
+
+        var mainConfig = {
+            type: 'bar',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', "Last 30 Days"],
+                datasets: [{
+                    label: 'Sales',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var AssociateSales_Daniel = function() {
+        if (!document.getElementById('associate-sales-daniel')) {
+            return;
+        }
+
+        var max = 20000;
+        var color = KApp.getStateColor('warning');
+        var ctx = document.getElementById('associate-sales-daniel').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [0, 0, 780, 570];
+
+        var mainConfig = {
+            type: 'bar',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', "Last 30 Days"],
+                datasets: [{
+                    label: 'Sales',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var AssociateSales_Phil = function() {
+        if (!document.getElementById('associate-sales-phil')) {
+            return;
+        }
+
+        var max = 20000;
+        var color = KApp.getStateColor('info');
+        var ctx = document.getElementById('associate-sales-phil').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [0, 0, 1797, 1689];
+
+        var mainConfig = {
+            type: 'bar',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', "Last 30 Days"],
+                datasets: [{
+                    label: 'Sales',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    var AssociateSales_Eric = function() {
+        if (!document.getElementById('associate-sales-eric')) {
+            return;
+        }
+
+        var max = 20000;
+        var color = KApp.getStateColor('brand');
+        var ctx = document.getElementById('associate-sales-eric').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [0, 0, 923, 492];
+
+        var mainConfig = {
+            type: 'bar',
+            data: {
+                labels: ['Oct', 'Nov', 'Dec', "Last 30 Days"],
+                datasets: [{
+                    label: 'Sales',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: KApp.getStateColor('brand'),
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: KApp.getStateColor('brand'),
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KUtil.addResizeHandler(function() {
+            chart.update();
+        });
+    }
+
+    // DON'T USE
+
+    var mediumCharts = function() {    
+        KLib.initMediumChart('sample1', [20, 45, 20, 10, 20, 35, 20, 25, 10, 10], 70, KApp.getStateColor('brand'));
     }
 
     var latestProductsMiniCharts = function() {
@@ -285,468 +2725,6 @@ var KDashboard = function() {
         var myDoughnut = new Chart(ctx, config);
     }
 
-    var widgetTotalOrdersChart = function() {
-        if (!document.getElementById('k_widget_total_orders_chart')) {
-            return;
-        }
-
-        // Main chart
-        var max = 80;
-        var color = KApp.getStateColor('brand');
-        var ctx = document.getElementById('k_widget_total_orders_chart').getContext("2d");
-        var gradient = ctx.createLinearGradient(0, 0, 0, 120);
-        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
-        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
-
-        var data = [30, 35, 45, 65, 35, 50, 40, 60, 35, 45];
-
-        var mainConfig = {
-            type: 'line',
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October'],
-                datasets: [{
-                    label: 'Orders',
-                    borderColor: color,
-                    borderWidth: 3,
-                    backgroundColor: gradient,
-                    pointBackgroundColor: KApp.getStateColor('brand'),
-                    data: data,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                title: {
-                    display: false,
-                    text: 'Stacked Area'
-                },
-                tooltips: {
-                    enabled: true,
-                    intersect: false,
-                    mode: 'nearest',
-                    bodySpacing: 5,
-                    yPadding: 10,
-                    xPadding: 10, 
-                    caretPadding: 0,
-                    displayColors: false,
-                    backgroundColor: KApp.getStateColor('brand'),
-                    titleFontColor: '#ffffff', 
-                    cornerRadius: 4,
-                    footerSpacing: 0,
-                    titleSpacing: 0
-                },
-                legend: {
-                    display: false,
-                    labels: {
-                        usePointStyle: false
-                    }
-                },
-                hover: {
-                    mode: 'index'
-                },
-                scales: {
-                    xAxes: [{
-                        display: false,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'Month'
-                        },
-                        ticks: {
-                            display: false,
-                            beginAtZero: true,
-                        }
-                    }],
-                    yAxes: [{
-                        display: false,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'Value'
-                        },
-                        gridLines: {
-                            color: '#eef2f9',
-                            drawBorder: false,
-                            offsetGridLines: true,
-                            drawTicks: false
-                        },
-                        ticks: {
-                            max: max,
-                            display: false,
-                            beginAtZero: true
-                        }
-                    }]
-                },
-                elements: {
-                    point: {
-                        radius: 0,
-                        borderWidth: 0,
-                        hoverRadius: 0,
-                        hoverBorderWidth: 0
-                    }
-                },
-                layout: {
-                    padding: {
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0
-                    }
-                }
-            }
-        };
-
-        var chart = new Chart(ctx, mainConfig);
-
-        // Update chart on window resize
-        KUtil.addResizeHandler(function() {
-            chart.update();
-        });
-    }
-
-    var widgetTotalOrdersChart2 = function() {
-        if (!document.getElementById('k_widget_total_orders_chart_2')) {
-            return;
-        }
-
-        // Main chart
-        var max = 80;
-        var color = KApp.getStateColor('danger');
-        var ctx = document.getElementById('k_widget_total_orders_chart_2').getContext("2d");
-        var gradient = ctx.createLinearGradient(0, 0, 0, 120);
-        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
-        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
-
-        var data = [30, 35, 45, 65, 35, 50, 40, 60, 35, 45];
-
-        var mainConfig = {
-            type: 'line',
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October'],
-                datasets: [{
-                    label: 'Orders',
-                    borderColor: color,
-                    borderWidth: 3,
-                    backgroundColor: gradient,
-                    pointBackgroundColor: KApp.getStateColor('brand'),
-                    data: data,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                title: {
-                    display: false,
-                    text: 'Stacked Area'
-                },
-                tooltips: {
-                    enabled: true,
-                    intersect: false,
-                    mode: 'nearest',
-                    bodySpacing: 5,
-                    yPadding: 10,
-                    xPadding: 10, 
-                    caretPadding: 0,
-                    displayColors: false,
-                    backgroundColor: KApp.getStateColor('brand'),
-                    titleFontColor: '#ffffff', 
-                    cornerRadius: 4,
-                    footerSpacing: 0,
-                    titleSpacing: 0
-                },
-                legend: {
-                    display: false,
-                    labels: {
-                        usePointStyle: false
-                    }
-                },
-                hover: {
-                    mode: 'index'
-                },
-                scales: {
-                    xAxes: [{
-                        display: false,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'Month'
-                        },
-                        ticks: {
-                            display: false,
-                            beginAtZero: true,
-                        }
-                    }],
-                    yAxes: [{
-                        display: false,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'Value'
-                        },
-                        gridLines: {
-                            color: '#eef2f9',
-                            drawBorder: false,
-                            offsetGridLines: true,
-                            drawTicks: false
-                        },
-                        ticks: {
-                            max: max,
-                            display: false,
-                            beginAtZero: true
-                        }
-                    }]
-                },
-                elements: {
-                    point: {
-                        radius: 0,
-                        borderWidth: 0,
-                        hoverRadius: 0,
-                        hoverBorderWidth: 0
-                    }
-                },
-                layout: {
-                    padding: {
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0
-                    }
-                }
-            }
-        };
-
-        var chart = new Chart(ctx, mainConfig);
-
-        // Update chart on window resize
-        KUtil.addResizeHandler(function() {
-            chart.update();
-        });
-    }
-
-    var widgetSalesStatisticsChart = function() {
-        if (!document.getElementById('k_chart_sales_statistics')) {
-            return;
-        }
-
-        var MONTHS = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
-
-        var color = Chart.helpers.color;
-        var barChartData = {
-            labels: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-            datasets: [{
-                label: 'Actual',
-                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
-                borderWidth: 0,
-                data: [17970, 30700, 26300, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            }, {
-                label: 'Forecast',
-                backgroundColor: color(KApp.getBaseColor('shape', 1)).alpha(1).rgbString(),
-                borderWidth: 0,
-                data: [9500, 21500, 34000, 37000, 43000, 46500, 50000, 56500, 59500, 66000, 69000, 72000]
-            }]
-        };
-
-        var ctx = document.getElementById('k_chart_sales_statistics').getContext('2d');
-        var myBar = new Chart(ctx, {
-            type: 'bar',
-            data: barChartData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                legend: false,
-                scales: {
-                    xAxes: [{
-                        categoryPercentage: 0.35,
-                        barPercentage: 0.70,
-                        display: true,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'Month'
-                        },
-                        gridLines: false,
-                        ticks: {
-                            display: true,
-                            beginAtZero: true,
-                            fontColor: KApp.getBaseColor('shape', 3),
-                            fontSize: 13,
-                            padding: 10
-                        }
-                    }],
-                    yAxes: [{
-                        categoryPercentage: 0.35,
-                        barPercentage: 0.70,
-                        display: true,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'Value'
-                        },
-                        gridLines: {
-                            color: KApp.getBaseColor('shape', 2),
-                            drawBorder: false,
-                            offsetGridLines: false,
-                            drawTicks: false,
-                            borderDash: [3, 4],
-                            zeroLineWidth: 1,
-                            zeroLineColor: KApp.getBaseColor('shape', 2),
-                            zeroLineBorderDash: [3, 4]
-                        },
-                        ticks: {
-                            max: 100000,                            
-                            stepSize: 10000,
-                            display: true,
-                            beginAtZero: true,
-                            fontColor: KApp.getBaseColor('shape', 3),
-                            fontSize: 13,
-                            padding: 10
-                        }
-                    }]
-                },
-                title: {
-                    display: false
-                },
-                hover: {
-                    mode: 'index'
-                },
-                tooltips: {
-                    enabled: true,
-                    intersect: false,
-                    mode: 'nearest',
-                    bodySpacing: 5,
-                    yPadding: 10,
-                    xPadding: 10, 
-                    caretPadding: 0,
-                    displayColors: false,
-                    backgroundColor: KApp.getStateColor('brand'),
-                    titleFontColor: '#ffffff', 
-                    cornerRadius: 4,
-                    footerSpacing: 0,
-                    titleSpacing: 0
-                },
-                layout: {
-                    padding: {
-                        left: 0,
-                        right: 0,
-                        top: 5,
-                        bottom: 5
-                    }
-                }
-            }
-        });
-    }
-
-    var widgetRevenueGrowthChart = function() {
-        if (!document.getElementById('k_chart_revenue_growth')) {
-            return;
-        }
-
-        var color = Chart.helpers.color;
-        var barChartData = {
-            labels: ['1 Aug', '2 Aug', '3 Aug', '4 Aug', '5 Aug', '6 Aug', '7 Aug', '8 Aug', '9 Aug', '10 Aug', '11 Aug', '12 Aug'],
-            datasets: [{
-                label: 'Sales',
-                backgroundColor: color(KApp.getStateColor('brand')).alpha(1).rgbString(),
-                borderWidth: 0,
-                data: [10, 40, 20, 40, 40, 60, 40, 80, 40, 70, 40, 70],
-                borderColor: KApp.getStateColor('brand'),
-                borderWidth: 3,
-                backgroundColor: color(KApp.getStateColor('brand')).alpha(0.07).rgbString(),
-                //pointBackgroundColor: KApp.getStateColor('brand'),
-                fill: true
-            }]
-        };
-
-        var ctx = document.getElementById('k_chart_revenue_growth').getContext('2d');
-        var myBar = new Chart(ctx, {
-            type: 'line',
-            data: barChartData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                legend: false,
-                scales: {
-                    xAxes: [{
-                        categoryPercentage: 0.35,
-                        barPercentage: 0.70,
-                        display: true,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'Month'
-                        },
-                        gridLines: false,
-                        ticks: {
-                            display: true,
-                            beginAtZero: true,
-                            fontColor: KApp.getBaseColor('shape', 3),
-                            fontSize: 13,
-                            padding: 10
-                        }
-                    }],
-                    yAxes: [{
-                        categoryPercentage: 0.35,
-                        barPercentage: 0.70,
-                        display: true,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'Value'
-                        },
-                        gridLines: {
-                            color: KApp.getBaseColor('shape', 2),
-                            drawBorder: false,
-                            offsetGridLines: false,
-                            drawTicks: false,
-                            borderDash: [3, 4],
-                            zeroLineWidth: 1,
-                            zeroLineColor: KApp.getBaseColor('shape', 2),
-                            zeroLineBorderDash: [3, 4]
-                        },
-                        ticks: {
-                            max: 100,                            
-                            stepSize: 20,
-                            display: true,
-                            beginAtZero: true,
-                            fontColor: KApp.getBaseColor('shape', 3),
-                            fontSize: 13,
-                            padding: 10
-                        }
-                    }]
-                },
-                title: {
-                    display: false
-                },
-                hover: {
-                    mode: 'index'
-                },
-                elements: {
-                    line: {
-                        tension: 0.5
-                    },
-                    point: { 
-                        radius: 0 
-                    }
-                },
-                tooltips: {
-                    enabled: true,
-                    intersect: false,
-                    mode: 'nearest',
-                    bodySpacing: 5,
-                    yPadding: 10,
-                    xPadding: 10, 
-                    caretPadding: 0,
-                    displayColors: false,
-                    backgroundColor: KApp.getStateColor('brand'),
-                    titleFontColor: '#ffffff', 
-                    cornerRadius: 4,
-                    footerSpacing: 0,
-                    titleSpacing: 0
-                },
-                layout: {
-                    padding: {
-                        left: 0,
-                        right: 0,
-                        top: 5,
-                        bottom: 5
-                    }
-                }
-            }
-        });
-    }
-
     var daterangepickerInit = function() {
         if ($('#k_dashboard_daterangepicker').length == 0) {
             return;
@@ -949,6 +2927,37 @@ var KDashboard = function() {
 
     return {
         init: function() {
+
+            // SALES DASHBOARD
+            SalesStatisticsChart();
+
+            SalesDashboard_Profit();
+            SalesDashboard_Revenue();
+            SalesDashboard_Cash();
+            SalesDashboard_ClientHours();
+            SalesDashboard_Utilization();
+            SalesDashboard_FixedCosts();
+
+            RevenueByPractitionerChart_October();
+            RevenueByPractitionerChart_November();
+            RevenueByPractitionerChart_December();
+            RevenueByPractitionerChart_30Days();
+            RevenueByPractitionerChart_LastWeek();
+            RevenueByPractitionerChart_Last7();
+            RevenueByPractitionerChart_YTD();
+
+            // ASSOCIATE DASHBOARD
+
+            AssociateSales_Karen();
+            AssociateSales_Cass();
+            AssociateSales_Felix();
+            AssociateSales_Mai();
+            AssociateSales_Daniel();
+            AssociateSales_Phil();
+            AssociateSales_Eric();
+
+            // DON'T USE
+
             mediumCharts();
 
             latestProductsMiniCharts();
@@ -958,11 +2967,7 @@ var KDashboard = function() {
 
             widgetTechnologiesChart();
             widgetTechnologiesChart2()
-            widgetTotalOrdersChart();
-            widgetTotalOrdersChart2();
 
-            widgetSalesStatisticsChart();
-            widgetRevenueGrowthChart();
         }
     };
 }();
